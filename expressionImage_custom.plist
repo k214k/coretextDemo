@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>[高兴]</key>
+	<string>emotion01_happy</string>
+	<key>[可爱]</key>
+	<string>emotion02_cute</string>
+	<key>[害羞]</key>
+	<string>emotion03_shame</string>
+	<key>[花心]</key>
+	<string>emotion04_sex</string>
+	<key>[飞吻]</key>
+	<string>emotion05_fly_kiss</string>
+	<key>[惊恐]</key>
+	<string>emotion06_scare</string>
+	<key>[大哭]</key>
+	<string>emotion07_cry</string>
+	<key>[亲亲]</key>
+	<string>emotion08_kiss</string>
+	<key>[窘]</key>
+	<string>emotion09_awkward</string>
+	<key>[嘻嘻]</key>
+	<string>emotion10_smile</string>
+	<key>[吐舌头]</key>
+	<string>emotion11_tongue</string>
+	<key>[忧郁]</key>
+	<string>emotion12_low</string>
+	<key>[愤怒]</key>
+	<string>emotion13_angry</string>
+	<key>[汗]</key>
+	<string>emotion14_speechless</string>
+	<key>[苦恼]</key>
+	<string>emotion15_worry</string>
+	<key>[惊呆了]</key>
+	<string>emotion16_stunned</string>
+	<key>[喜极而泣]</key>
+	<string>emotion17_happy_cry</string>
+	<key>[刺瞎眼]</key>
+	<string>emotion18_forbidden_2see</string>
+	<key>[小怪兽]</key>
+	<string>emotion19_monster</string>
+	<key>[喜笑颜开]</key>
+	<string>emotion20_very_happy</string>
+	<key>[鬼脸]</key>
+	<string>emotion21_grimace</string>
+	<key>[爱心]</key>
+	<string>emotion22_love</string>
+	<key>[心碎]</key>
+	<string>emotion23_broke_heart</string>
+	<key>[浪漫]</key>
+	<string>emotion24_romantic</string>
+	<key>[一见钟情]</key>
+	<string>emotion25_cupid</string>
+	<key>[赞]</key>
+	<string>emotion26_praise</string>
+	<key>[鄙视]</key>
+	<string>emotion27_despise</string>
+</dict>
+</plist>
