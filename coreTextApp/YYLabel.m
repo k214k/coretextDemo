@@ -11,11 +11,11 @@
 #import "YYLabelAttachment.h"
 #import "YYLabelURL.h"
 #import "YYOutLabel.h"
-
+#define  KREGULARCOUNT  3
 @interface YYLabel()<UIActionSheetDelegate>
 {
     NSMutableArray  *attachmentArray;//图片数组
-    NSMutableArray  *linkLocationArray;//连接数组
+    NSMutableArray  *linkLocationArray;//连接数组包括电话号码和url地址、email地址
     CTFrameRef  frameRef;
     CGFloat     ascent;
     CGFloat     descent;
@@ -78,41 +78,7 @@
     return newSize;
 }
 
-#pragma mark - 长按事件的内部方法
-//-(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
-//{
-//    //CGPoint point = [gestureRecognizer locationInView:self];
-//    if(gestureRecognizer.state == UIGestureRecognizerStateBegan)
-//    {
-//        
-//    }
-//    else if(gestureRecognizer.state == UIGestureRecognizerStateEnded)
-//    {
-//        isAllDraw = YES;
-//        [self setNeedsDisplay];
-//        [self shownMenu];
-//    }
-//}
-//
-#pragma mark -菜单事件方法
-//- (void)copyed:(id)sender
-//{
-//
-//}
-
 #pragma mark - 内部方法
-//-(void)shownMenu
-//{
-//    UIMenuItem *copy = [[UIMenuItem alloc] initWithTitle:@"复制文本消息"action:@selector(copyed:)];
-//    UIMenuController *menu = [UIMenuController sharedMenuController];
-//    [menu setMenuItems:[NSArray arrayWithObjects:copy,nil]];
-//    CGRect targetRect = [[self superview] convertRect:self.frame
-//                                 fromView:self];
-//    
-//    [menu setTargetRect:CGRectInset(targetRect, 0.0f, 4.0f) inView:[self superview]];
-//    [menu setMenuVisible:YES animated:YES];
-//}
-
 -(void)initCommon
 {
     attachmentArray = [NSMutableArray new];
@@ -136,12 +102,12 @@
     frameRef = nil;
     touchesLinkUrl = nil;
     _attributedString = [NSMutableAttributedString new];
-    customEmojiRegex = @"\\[[a-zA-Z0-9\\u4e00-\\u9fa5]+\\]";
+    customEmojiRegex = @"\\[[a-zA-Z0-9\\u4e00-\\u9fa5]+\\]";//表情
     customEmojiRegularExpression = [[NSRegularExpression alloc] initWithPattern:customEmojiRegex options:NSRegularExpressionCaseInsensitive error:nil];
     regexps[0] = kURLRegularExpression();
     regexps[1] = kPhoneNumerRegularExpression();
     regexps[2] = kEmailRegularExpression();
-    regexps[3] = kAtRegularExpression();
+    //regexps[3] = kAtRegularExpression();
     [self resetFont];
     
 }
@@ -151,6 +117,7 @@
     if (frameRef)
     {
         CFRelease(frameRef);
+        frameRef = nil;
     }
 }
 
@@ -294,7 +261,6 @@
         [self setWillCTFrameAttributedstring:drawString rect:rect];
         [self drawLightAttributedstring:rect];
         [self drawAllBackGround:rect];
-        [self drawClean:rect];
         [self drawAttachment];
         [self drawText: drawString
                   rect: rect
@@ -335,7 +301,7 @@
         
         //添加链接形式计算区域和保存连接数组
 
-        for (int i = 0;i < 4;++i)
+        for (int i = 0;i < KREGULARCOUNT;++i)
         {
             NSArray *urlArray = [regexps[i] matchesInString:tmp.string
                                                     options:NSMatchingWithTransparentBounds
@@ -433,7 +399,7 @@
     return rectForRange;
 }
 #pragma mark - 绘制
-//绘制背景
+//绘制长按选中背景
 -(void)drawAllBackGround:(CGRect)rect
 {
     if (self.isAllDraw&&self.highlightColor)
@@ -447,45 +413,12 @@
     {
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         CGRect rectangle = CGRectMake(0, 0, allSize.width, allSize.height);
-        CGContextSetFillColorWithColor(ctx,[UIColor whiteColor].CGColor);
+        CGContextSetFillColorWithColor(ctx,[UIColor clearColor].CGColor);
         CGContextFillRect(ctx , rectangle);
     }
 }
 
--(void)drawClean:(CGRect)rect
-{
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    if (ctx == nil)
-    {
-        return;
-    }
-    
-    CFArrayRef lines = CTFrameGetLines(frameRef);
-    CFIndex  linesCount = CFArrayGetCount(lines);
-    CGPoint  linesOrign[linesCount];
-    CTFrameGetLineOrigins(frameRef, CFRangeMake(0, 0), linesOrign);
-    for (CFIndex i = 0;i < linesCount;++i)
-    {
-        CTLineRef line = CFArrayGetValueAtIndex(lines, i);
-        CFArrayRef runs = CTLineGetGlyphRuns(line);
-        CFIndex runsCount = CFArrayGetCount(runs);
-        CGPoint runOrign = linesOrign[i];
-    
-        CGFloat  tmpHeight = runOrign.y;
-        for (CFIndex j = 0;j < runsCount;++j)
-        {
-            CTRunRef run = CFArrayGetValueAtIndex(runs, j);
-            CGFloat runAscent,runDescent;
-            float RunWidth=CTRunGetTypographicBounds((CTRunRef)run, CFRangeMake(0,0), &runAscent, &runDescent, NULL);
-            CGFloat runHeight = runAscent + (runDescent);
-            CGRect rectangle = CGRectMake(linesOrign[0].x, tmpHeight-4.3, RunWidth, runHeight);
-            CGContextSetFillColorWithColor(ctx,[UIColor clearColor].CGColor);
-            CGContextFillRect(ctx , rectangle);
-        }
-    }
-
-}
-//绘制图片
+//绘制url高亮背景色
 -(void)drawLightAttributedstring:(CGRect)rect
 {
     if (touchesLinkUrl && self.highlightColor)
@@ -544,7 +477,7 @@
 }
 
 -(void)drawAttachment
-{
+{//绘制图片
     if (0 == attachmentArray.count)
     {
         return;
@@ -632,7 +565,7 @@
     if (frameRef)
     {
         if (lineNumber)
-        {
+        {//一行一行绘制
             CFArrayRef lines = CTFrameGetLines(frameRef);
             NSInteger  numberLines = [self numberLine];
             CGPoint    linesOrgins[numberLines];
@@ -646,7 +579,7 @@
             }
         }
         else
-        {
+        {//整体绘制
             CTFrameDraw(frameRef,context);
         }
         
@@ -680,7 +613,7 @@
 #pragma mark - 内部点击事件响应的处理
 
 -(CGRect)getRect:(CTLineRef)aLine point:(CGPoint)aPoint
-{
+{//获取当前行的点击的区域
     CGFloat tmpAscent = 0;
     CGFloat tmpDescent = 0;
     CGFloat tmpLeadering = 0;
@@ -690,7 +623,7 @@
 }
 
 -(YYLabelURL*)getLinkUrl:(CFIndex)aIndex
-{
+{//获取url
     for (YYLabelURL *tmp in linkLocationArray)
     {
         if(NSLocationInRange(aIndex,tmp.urlRange))
@@ -702,7 +635,7 @@
 }
 
 -(YYLabelURL*)touchesPoint:(CGPoint)aPoint
-{
+{//获取点击的区域
     static const CGFloat kVMargin = 5;
     if (!CGRectContainsPoint(CGRectInset(self.bounds, 0, -kVMargin), aPoint)
         || frameRef == nil)
@@ -739,7 +672,7 @@
 }
 
 -(BOOL)touchesEndOpenUrl:(CGPoint)aPoint
-{
+{//打开连接
     YYLabelURL* tmpUrl = [self touchesPoint:aPoint];
     if (tmpUrl)
     {

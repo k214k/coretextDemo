@@ -18,6 +18,7 @@
         if (fontRef)
         {
             [self addAttribute:(NSString*)kCTFontAttributeName value:(__bridge id)fontRef range:NSMakeRange(0, self.length)];
+            CFRelease(fontRef);
         }
     }
 }

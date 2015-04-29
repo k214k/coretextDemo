@@ -56,11 +56,13 @@
 
 #pragma mark - Copying Method
 
-- (BOOL)canBecomeFirstResponder {
+- (BOOL)canBecomeFirstResponder
+{
     return YES;
 }
 
-- (BOOL)becomeFirstResponder {
+- (BOOL)becomeFirstResponder
+{
     return [super becomeFirstResponder];
 }
 
@@ -97,23 +99,21 @@
 #pragma mark - 内部方法
 -(void)shownMenu
 {
-    UIMenuItem *copy = [[UIMenuItem alloc] initWithTitle:@"复制"action:@selector(copyed:)];
-    menu = [UIMenuController sharedMenuController];
-    [menu setMenuItems:[NSArray arrayWithObjects:copy,nil]];
-    [menu setTargetRect:label.frame inView:self];
+    if(!menu)
+    {
+        UIMenuItem *copy = [[UIMenuItem alloc] initWithTitle:@"复制"action:@selector(copyed:)];
+        menu = [UIMenuController sharedMenuController];
+        [menu setMenuItems:[NSArray arrayWithObjects:copy,nil]];
+        [menu setTargetRect:label.frame inView:self];
+    }
+
     [menu setMenuVisible:YES animated:YES];
 }
 
 -(void)hideMenu
 {
+    isAllDraw = NO;
     [menu setMenuVisible:NO animated:YES];
 }
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end
